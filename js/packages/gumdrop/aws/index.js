@@ -5,6 +5,8 @@ const bs58 = require("bs58");
 const nacl = require("tweetnacl");
 const discord = require("discord.js");
 
+require('dotenv').config();
+
 const MERKLE_DISTRIBUTOR_ID = new PublicKey(process.env.MA_DISTRIBUTOR_ID);
 const CLAIM_INSTR = Buffer.from(sha256.digest("global:claim")).slice(0, 8);
 const CANDY_INSTR = Buffer.from(sha256.digest("global:claim_candy")).slice(0, 8);
@@ -15,7 +17,7 @@ const OTP_SECRET = Buffer.from(JSON.parse(process.env.MA_OTP_SECRET));
 const OTP_TABLE_NAME = process.env.MA_OTP_TABLE_NAME;
 
 const AWS = require("aws-sdk");
-const ddb = new AWS.DynamoDB.DocumentClient({ apiVersion: '2012-08-10', region: 'us-east-2' });
+const ddb = new AWS.DynamoDB.DocumentClient({ apiVersion: '2012-08-10', region: 'eu-west-2' });
 
 // time in MS (normally Date.now())
 const OTP_X = Number(process.env.MA_OTP_X);
@@ -130,7 +132,7 @@ const sendOTP = async (event) => {
   // should actually help in this case?
   await logDB(handle, time, serializedBuffer);
 
-  const otpMessage = `Your gumdrop OTP is ${String(otp).padStart(8, "0")}`;
+  const otpMessage = `Your Space Goats on Acid OTP is ${String(otp).padStart(8, "0")}`;
   if (event.discordGuild) {
     const client = new discord.Client();
     await client.login(process.env.DISCORD_BOT_TOKEN);
@@ -152,12 +154,12 @@ const sendOTP = async (event) => {
           Text: { Data: otpMessage },
         },
 
-        Subject: { Data: "Gumdrop OTP" },
+        Subject: { Data: "Space Goats on Acid OTP" },
       },
-      Source: "santa@aws.metaplex.com",
+      Source: "airdrop@spacegoatsonacid.com",
     };
 
-    const ses = new AWS.SES({ region: "us-east-2" });
+    const ses = new AWS.SES({ region: "eu-west-2" });
     return ses.sendEmail(params).promise();
   }
 };

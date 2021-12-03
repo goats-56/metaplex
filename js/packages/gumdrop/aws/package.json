@@ -1,0 +1,22 @@
+{
+  "name": "send-otp",
+  "version": "1.0.0",
+  "description": "WIP AWS configuration placeholders that can be used as a starting point to build a separate instance for gumdrop distribution and OTP verification. Any instances of {PLACEHOLDER-*} should be replaced with the appropriate values after construction (and `us-east-2` replaced with an appropriate region if necessary).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@solana/web3.js": "^1.30.1",
+    "aws-sdk": "^2.1036.0",
+    "bn": "^1.0.5",
+    "bs58": "^4.0.1",
+    "discord.js": "12.5.3",
+    "dotenv": "^10.0.0",
+    "js-sha256": "^0.9.0",
+    "tweetnacl": "^1.0.3"
+  }
+}
