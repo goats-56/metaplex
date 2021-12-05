@@ -428,7 +428,7 @@ export const Create = () => {
       wallet.publicKey,
       needsPin,
       claimMethod,
-      `${window.location.origin}/gumdrop`,
+      `${window.location.origin}/`,
       base.publicKey,
       temporalSigner,
       claimants,

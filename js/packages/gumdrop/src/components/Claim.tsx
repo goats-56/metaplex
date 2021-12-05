@@ -6,21 +6,19 @@ import {
   Box,
   Button,
   CircularProgress,
-  FormControl,
   Link as HyperLink,
-  InputLabel,
-  MenuItem,
-  Select,
   Stack,
   Step,
   StepLabel,
   Stepper,
   TextField,
+  Input,
 } from "@mui/material";
 
 import {
   useWallet,
 } from "@solana/wallet-adapter-react";
+
 import {
   Connection as RPCConnection,
   Keypair,
@@ -31,22 +29,28 @@ import {
   Transaction,
   TransactionInstruction,
 } from "@solana/web3.js";
+
 import {
   AccountLayout,
   MintLayout,
   Token,
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
+
 import {
   notify,
 } from "@oyster/common";
+
 import { sha256 } from "js-sha256";
+
 import BN from 'bn.js';
+
 import * as bs58 from "bs58";
 
 import {
   useConnection,
 } from "../contexts";
+
 import {
   CANDY_MACHINE_ID,
   GUMDROP_DISTRIBUTOR_ID,
@@ -54,6 +58,7 @@ import {
   SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID,
   TOKEN_METADATA_PROGRAM_ID,
 } from "../utils/ids";
+
 import {
   getCandyMachine,
   getCandyMachineAddress,
@@ -61,11 +66,14 @@ import {
   getEditionMarkerPda,
   getMetadata,
 } from "../utils/accounts";
+
 import { MerkleTree } from "../utils/merkleTree";
+
 import {
   explorerLinkFor,
   sendSignedTransaction,
 } from "../utils/transactions";
+
 import {
   chunk,
 } from "../utils/claimant";
@@ -634,17 +642,22 @@ export const Claim = (
   }
 
   const params = queryString.parse(query);
-  const [distributor, setDistributor] = React.useState(params.distributor as string || "");
-  const [claimMethod, setClaimMethod] = React.useState(
+
+
+
+
+
+  const [distributor, ] = React.useState(params.distributor as string || "");
+  const [claimMethod, ] = React.useState(
         params.tokenAcc ? "transfer"
       : params.config   ? "candy"
       : params.master   ? "edition"
       :                   "");
-  const [tokenAcc, setTokenAcc] = React.useState(params.tokenAcc as string || "");
-  const [candyConfig, setCandyConfig] = React.useState(params.config as string || "");
-  const [candyUUID, setCandyUUID] = React.useState(params.uuid as string || "");
-  const [masterMint, setMasterMint] = React.useState(params.master as string || "");
-  const [editionStr, setEditionStr] = React.useState(params.edition as string || "");
+  const [tokenAcc, ] = React.useState(params.tokenAcc as string || "");
+  const [candyConfig, ] = React.useState(params.config as string || "");
+  const [candyUUID, ] = React.useState(params.uuid as string || "");
+  const [masterMint, ] = React.useState(params.master as string || "");
+  const [editionStr, ] = React.useState(params.edition as string || "");
   const [handle, setHandle] = React.useState(params.handle as string || "");
   const [amountStr, setAmount] = React.useState(params.amount as string || "");
   const [indexStr, setIndex] = React.useState(params.index as string || "");
@@ -666,7 +679,7 @@ export const Claim = (
     // NB: pin can be empty if handle is a public-key and we are claiming through wallets
     // NB: proof can be empty!
 
-  const [editable, setEditable] = React.useState(!allFieldsPopulated);
+  const [editable, ] = React.useState(false);
 
   // temporal verification
   const [transaction, setTransaction] = React.useState<Transaction | null>(null);
@@ -988,51 +1001,32 @@ export const Claim = (
     if (claimMethod === "candy") {
       return (
         <React.Fragment>
-          <TextField
+          <Input
             id="config-text-field"
-            label="Candy Config"
             value={candyConfig}
-            onChange={e => setCandyConfig(e.target.value)}
             disabled={!editable}
+            type="hidden"
+            disableUnderline={true}
           />
-          <TextField
+          <Input
             id="config-uuid-text-field"
-            label="Candy UUID"
             value={candyUUID}
-            onChange={e => setCandyUUID(e.target.value)}
             disabled={!editable}
+            type="hidden"
+            disableUnderline={true}
           />
         </React.Fragment>
       );
     } else if (claimMethod === "transfer") {
       return (
         <React.Fragment>
-          <TextField
-            id="token-acc-text-field"
-            label="Source Token Account"
-            value={tokenAcc}
-            onChange={(e) => setTokenAcc(e.target.value)}
-            disabled={!editable}
-          />
+           <p>Unsupported claim type.</p>
         </React.Fragment>
       );
     } else if (claimMethod === "edition") {
       return (
         <React.Fragment>
-          <TextField
-            id="master-mint-text-field"
-            label="Master Mint"
-            value={masterMint}
-            onChange={(e) => setMasterMint(e.target.value)}
-            disabled={!editable}
-          />
-          <TextField
-            id="edition-text-field"
-            label="Edition"
-            value={editionStr}
-            onChange={(e) => setEditionStr(e.target.value)}
-            disabled={!editable}
-          />
+          <p>Unsupported claim type.</p>
         </React.Fragment>
       );
     }
@@ -1040,62 +1034,51 @@ export const Claim = (
 
   const populateClaimC = (onClick) => (
     <React.Fragment>
-      <TextField
+      <Input
         id="distributor-text-field"
-        label="Distributor"
         value={distributor}
-        onChange={(e) => setDistributor(e.target.value)}
         disabled={!editable}
+        type="hidden"
+        disableUnderline={true}
       />
-      <FormControl fullWidth>
-        <InputLabel
-          id="claim-method-label"
-          disabled={!editable}
-        >
-          Claim Method
-        </InputLabel>
-        <Select
-          labelId="claim-method-label"
-          id="claim-method-select"
-          value={claimMethod}
-          label="Claim Method"
-          onChange={(e) => { setClaimMethod(e.target.value); }}
-          style={{textAlign: "left"}}
-          disabled={!editable}
-        >
-          <MenuItem value={"transfer"}>Token Transfer</MenuItem>
-          <MenuItem value={"candy"}>Candy Machine</MenuItem>
-          <MenuItem value={"edition"}>Limited Edition</MenuItem>
-        </Select>
-      </FormControl>
+      <Input
+        id="claim-method-select"
+        value={claimMethod}
+        disabled={!editable}
+        type="hidden"
+        disableUnderline={true}
+      />
+
       {claimMethod !== "" && claimData(claimMethod)}
       {claimMethod !== "edition" && <TextField
         id="amount-text-field"
         label="Amount"
         value={amountStr}
         onChange={(e) => setAmount(e.target.value)}
-        disabled={!editable}
+        disabled={false}
       />}
-      <TextField
+      <Input
         id="handle-text-field"
-        label="Handle"
         value={handle}
         onChange={(e) => setHandle(e.target.value)}
         disabled={!editable}
+        type="hidden"
+        disableUnderline={true}
       />
-      <TextField
+      <Input
         id="index-text-field"
-        label="Index"
         value={indexStr}
         onChange={(e) => setIndex(e.target.value)}
         disabled={!editable}
+        type="hidden"
+        disableUnderline={true}
       />
       {params.pin !== "NA" && <TextField
         id="pin-text-field"
         label="Pin"
         value={pinStr}
         onChange={(e) => setPin(e.target.value)}
-        disabled={!editable}
+        disabled={false}
       />}
       <TextField
         id="proof-text-field"
@@ -1103,14 +1086,9 @@ export const Claim = (
         multiline
         value={proofStr}
         onChange={(e) => setProof(e.target.value)}
-        disabled={!editable}
+        disabled={false}
       />
-      <Button
-        color="info"
-        onClick={() => setEditable(!editable)}
-      >
-        {!editable ? "Edit Claim" : "Stop Editing"}
-      </Button>
+
       <Box />
 
       <Box sx={{ position: "relative" }}>
@@ -1144,7 +1122,7 @@ export const Claim = (
           wrap();
         }}
       >
-        {asyncNeedsTemporalSigner ? "Next" : "Claim Gumdrop"}
+        {asyncNeedsTemporalSigner ? "Next" : "Mint your GOATs"}
       </Button>
       {loading && loadingProgress()}
       </Box>

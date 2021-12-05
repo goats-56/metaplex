@@ -2,7 +2,7 @@
   "name": "gumdrop",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://lwus.github.io/gumdrop/",
+  "homepage": "https://presale.spacegoatsonacid.com/",
   "dependencies": {
     "@aws-sdk/client-lambda": "^3.38.0",
     "@aws-sdk/client-sesv2": "^3.38.0",
@@ -28,6 +28,7 @@
     "@solana/spl-token-registry": "0.2.202",
     "@solana/wallet-adapter-base": "0.4.1",
     "@solana/wallet-adapter-react": "^0.7.1",
+    "@solana/wallet-adapter-react-ui": "^0.6.1",
     "@solana/wallet-adapter-wallets": "^0.6.1",
     "@solana/web3.js": "^1.24.1",
     "@testing-library/jest-dom": "^5.11.4",
