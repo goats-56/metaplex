@@ -1,7 +1,7 @@
 pub mod utils;
 
 use {
-    crate::utils::{assert_initialized, assert_owned_by, spl_token_transfer, TokenTransferParams},
+    crate::utils::{assert_initialized, assert_owned_by, spl_token_transfer, TokenTransferParams, verify_jwt},
     anchor_lang::{
         prelude::*, solana_program::system_program, AnchorDeserialize, AnchorSerialize,
         Discriminator, Key,
@@ -33,7 +33,13 @@ pub mod nft_candy_machine {
         let candy_machine = &mut ctx.accounts.candy_machine;
         let config = &ctx.accounts.config;
         let clock = &ctx.accounts.clock;
+        let jwt = &ctx.accounts.jwt;
 
+        // Verify JWT token is valid
+        let claims = verify_jwt(jwt);
+        assert_eq!(claims["sub"], ctx.accounts.wallet.key, "Token sub does not match the wallet key. Please re-submit the captcha to obtain a new token.");
+
+        // Verify Go Live date
         match candy_machine.data.go_live_date {
             None => {
                 if *ctx.accounts.payer.key != candy_machine.authority {
@@ -516,6 +522,7 @@ pub struct MintNFT<'info> {
     system_program: Program<'info, System>,
     rent: Sysvar<'info, Rent>,
     clock: Sysvar<'info, Clock>,
+    jwt: String,
 }
 
 #[derive(Accounts)]

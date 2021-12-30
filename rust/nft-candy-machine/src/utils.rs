@@ -9,6 +9,17 @@ use {
     },
 };
 
+use hmac::{Hmac, NewMac};
+use jwt::VerifyWithKey;
+use sha2::Sha256;
+use std::collections::BTreeMap;
+
+pub fn verify_jwt(token_str: String) -> BTreeMap<String, String> {
+    let key: Hmac<Sha256> = Hmac::new_from_slice(b"some-secret").unwrap();
+    let claims: BTreeMap<String, String> = token_str.verify_with_key(&key).unwrap();
+    Ok(claims);
+}
+
 pub fn assert_initialized<T: Pack + IsInitialized>(
     account_info: &AccountInfo,
 ) -> Result<T, ProgramError> {
