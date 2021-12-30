@@ -22,6 +22,7 @@
     "deploy": "run-s deploy:docs build deploy:apps && gh-pages -d docs",
     "deploy:docs": "lerna run docs",
     "deploy:apps": "lerna run deploy:app",
+    "deploy:vercel": "vercel deploy",
     "test": "lerna run test --concurrency 1 --stream"
   },
   "lint-staged": {
