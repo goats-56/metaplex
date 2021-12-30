@@ -51,7 +51,7 @@ program.version('0.0.2');
 if (!fs.existsSync(CACHE_PATH)) {
   fs.mkdirSync(CACHE_PATH);
 }
-log.setLevel(log.levels.INFO);
+log.setLevel(log.levels.DEBUG);
 programCommand('upload')
   .argument(
     '<directory>',

@@ -26,7 +26,7 @@ async function uploadFile(
     log.debug('Error', err);
   }
 
-  const url = `https://${awsS3Bucket}.s3.amazonaws.com/${filename}`;
+  const url = `https://${awsS3Bucket}/${filename}`;
   log.debug('Location:', url);
   return url;
 }
@@ -36,7 +36,7 @@ export async function awsUpload(
   file: string,
   manifestBuffer: Buffer,
 ) {
-  const REGION = 'us-east-1'; // TODO: Parameterize this.
+  const REGION = process.env.AWS_REGION || 'eu-west-2';
   const s3Client = new S3Client({ region: REGION });
   const filename = `assets/${basename(file)}`;
   log.debug('file:', file);
